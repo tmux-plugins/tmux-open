@@ -21,11 +21,9 @@ is_osx() {
 	[ "$platform" == "Darwin" ]
 }
 
-# 1. write a command to the terminal, example: 'vim -- some_file.txt'
-# 2. invoke the command by pressing enter/C-m
 command_generator() {
 	local command_string="$1"
-	echo "xargs tmux send-keys '$command_string '; tmux send-keys 'C-m'"
+	echo "xargs -I {} tmux run-shell '$command_string {}'"
 }
 
 generate_open_command() {
@@ -39,11 +37,13 @@ generate_open_command() {
 	fi
 }
 
+# 1. write a command to the terminal, example: 'vim -- some_file.txt'
+# 2. invoke the command by pressing enter/C-m
 generate_editor_command() {
 	local editor=$(get_tmux_option "$open_editor_override" "$EDITOR")
 	# vim freezes terminal unless there's the '--' argument. Other editors seem
 	# to be fine with it (textmate [mate], light table [table]).
-	echo "$(command_generator "$editor --")"
+	echo "xargs tmux send-keys '$editor -- '; tmux send-keys 'C-m'"
 }
 
 set_copy_mode_open_bindings() {
