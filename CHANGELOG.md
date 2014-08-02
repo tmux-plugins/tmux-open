@@ -1,6 +1,7 @@
 # Changelog
 
 ### master
+- if $EDITOR env var is not set, provide fallback
 
 ### v0.0.2, Aug 02, 2014
 - add readme
