@@ -25,7 +25,7 @@ is_osx() {
 # 2. invoke the command by pressing enter/C-m
 command_generator() {
 	local command_string="$1"
-	echo "cat - | xargs tmux send-keys '$command_string '; tmux send-keys 'C-m'"
+	echo "xargs tmux send-keys '$command_string '; tmux send-keys 'C-m'"
 }
 
 generate_open_command() {
