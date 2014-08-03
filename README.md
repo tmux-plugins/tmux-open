@@ -21,6 +21,15 @@ In copy mode:
   default browser.
 - highlight `file.txt` and press `Ctrl-o` - file will open in `$EDITOR`.
 
+### Other goodies
+
+`tmux-open` works great with:
+
+- [tmux-copycat](https://github.com/tmux-plugins/tmux-copycat) - a plugin for
+  regex searches in tmux and fast match selection
+- [tmux-yank](https://github.com/tmux-plugins/tmux-yank) - enables copying
+  highlighted text to system clipboard
+
 ### License
 
 [MIT](LICENSE.md)

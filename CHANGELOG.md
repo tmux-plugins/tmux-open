@@ -3,6 +3,7 @@
 ### master
 - if $EDITOR env var is not set, provide fallback
 - increase `open` command reliability by first `cd`-ing to the current PWD
+- add links to related plugins to the readme
 
 ### v0.0.2, Aug 02, 2014
 - add readme
