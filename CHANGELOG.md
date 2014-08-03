@@ -1,6 +1,8 @@
 # Changelog
 
 ### master
+
+### v1.0.0, Aug 03, 2014
 - if $EDITOR env var is not set, provide fallback
 - increase `open` command reliability by first `cd`-ing to the current PWD
 - add links to related plugins to the readme
