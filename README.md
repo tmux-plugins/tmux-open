@@ -21,6 +21,10 @@ In copy mode:
   default browser.
 - highlight `file.txt` and press `Ctrl-o` - file will open in `$EDITOR`.
 
+### Screencast
+
+[![screencast screenshot](/video/screencast_img.png)](http://vimeo.com/102455265)
+
 ### Other goodies
 
 `tmux-open` works great with:
