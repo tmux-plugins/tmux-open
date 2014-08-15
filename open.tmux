@@ -32,7 +32,7 @@ get_editor_from_the_env_var() {
 
 command_generator() {
 	local command_string="$1"
-	echo "xargs -I {} tmux run-shell 'cd #{pane_current_path}; $command_string {}'"
+	echo "xargs -I {} tmux run-shell 'cd #{pane_current_path}; $command_string {} > /dev/null'"
 }
 
 generate_open_command() {
