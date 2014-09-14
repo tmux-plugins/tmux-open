@@ -1,6 +1,7 @@
 # Changelog
 
 ### master
+- 'open editor' command can now open files that have spaces
 
 ### v1.0.0, Aug 03, 2014
 - if $EDITOR env var is not set, provide fallback
