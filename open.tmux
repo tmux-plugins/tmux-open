@@ -8,8 +8,8 @@ default_open_key="o"
 open_option="@open"
 
 default_open_editor_key="C-o"
-open_editor_option="@open_editor"
-open_editor_override="@open_editor_command"
+open_editor_option="@open-editor"
+open_editor_override="@open-editor-command"
 
 command_exists() {
 	local command="$1"
