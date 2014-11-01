@@ -1,6 +1,8 @@
 # Changelog
 
 ### master
+
+### v2.0.0, Nov 01, 2014
 - 'open editor' command can now open files that have spaces
 - system open command can now open files that have spaces
 - change "@open-editor" options to use hyphens (bc tmux core uses those too)
