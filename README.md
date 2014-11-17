@@ -54,6 +54,17 @@ Reload TMUX environment:
 
 You should now be able to use the plugin.
 
+### Configuration
+
+> How can I change the default "o" key binding to something else? For example,
+> key "x"?
+
+Put `set -g @open 'x'` in `tmux.conf`.
+
+> How can I change the default "Ctrl-o" key binding to "Ctrl-x"?
+
+Put `set -g @open-editor 'C-x'` in `tmux.conf`.
+
 ### Other goodies
 
 `tmux-open` works great with:
