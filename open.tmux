@@ -41,7 +41,7 @@ command_generator() {
 
 search_command_generator() {
   local command_string="$1"
-  echo "xargs -I {} tmux run-shell 'cd ~/Development/Tmux/tmux-open; $command_string https://www.google.com.br/search?q=\"{}\" > /dev/null'"
+  echo "xargs -I {} tmux run-shell 'cd #{pane_current_path}; $command_string https://www.google.com/search?q=\"{}\" > /dev/null'"
 }
 
 generate_open_command() {
