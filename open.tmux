@@ -11,10 +11,6 @@ default_open_editor_key="C-o"
 open_editor_option="@open-editor"
 open_editor_override="@open-editor-command"
 
-default_open_search_key="S"
-open_search_option="@open_search"
-open_search_override="@open_search_command"
-
 command_exists() {
 	local command="$1"
 	type "$command" >/dev/null 2>&1
@@ -41,7 +37,9 @@ command_generator() {
 
 search_command_generator() {
   local command_string="$1"
-  echo "xargs -I {} tmux run-shell 'cd #{pane_current_path}; $command_string https://www.google.com/search?q=\"{}\" > /dev/null'"
+  local engine="$2"
+
+  echo "xargs -I {} tmux run-shell 'cd #{pane_current_path}; $command_string $engine\"{}\" > /dev/null'"
 }
 
 generate_open_command() {
@@ -57,9 +55,9 @@ generate_open_command() {
 
 generate_open_search_command() {
 	if is_osx; then
-		echo "$(search_command_generator "open")"
+		echo "$(search_command_generator "open" "$engine")"
 	elif command_exists "xdg-open"; then
-		echo "$(search_command_generator "xdg-open")"
+		echo "$(search_command_generator "xdg-open" "$engine")"
 	else
 		# error command for Linux machines when 'xdg-open' not installed
 		"$CURRENT_DIR/scripts/tmux_open_error_message.sh xdg-open"
@@ -97,13 +95,17 @@ set_copy_mode_open_editor_bindings() {
 }
 
 set_copy_mode_open_search_bindings() {
-	local search_command="$(generate_open_search_command)"
-	local key_bindings=$(get_tmux_option "$open_search_option" "$default_open_search_key")
-	local key
-	for key in $key_bindings; do
-		tmux bind-key -t vi-copy    "$key" copy-pipe "$search_command"
-		tmux bind-key -t emacs-copy "$key" copy-pipe "$search_command"
-	done
+  local stored_engine_vars="$(stored_engine_vars)"
+  local engine_var
+  local engine
+  local key
+
+  for engine_var in $stored_engine_vars; do
+    engine="$(get_engine "$engine_var")"
+
+    tmux bind-key -t vi-copy    "$engine_var" copy-pipe "$(generate_open_search_command "$engine")"
+    tmux bind-key -t emacs-copy "$engine_var" copy-pipe "$(generate_open_search_command "$engine")"
+  done
 }
 
 main() {
