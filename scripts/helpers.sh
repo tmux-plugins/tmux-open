@@ -33,3 +33,12 @@ display_message() {
 	# restores original 'display-time' value
 	tmux set-option -gq display-time "$saved_display_time"
 }
+
+stored_engine_vars() {
+  tmux show-options -g | grep -i "^@open" | cut -d '-' -f2 | cut -d ' ' -f1 | xargs
+}
+
+get_engine() {
+  local engine_var="$1"
+  tmux show-options -g | grep -i "^@open-$engine_var" | cut -d ' ' -f2 | xargs
+}
