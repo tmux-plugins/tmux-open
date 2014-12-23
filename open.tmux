@@ -11,6 +11,9 @@ default_open_editor_key="C-o"
 open_editor_option="@open-editor"
 open_editor_override="@open-editor-command"
 
+default_git_checkout_key="G"
+git_checkout_option="@open_git_checkout"
+
 command_exists() {
 	local command="$1"
 	type "$command" >/dev/null 2>&1
@@ -35,6 +38,11 @@ command_generator() {
 	echo "xargs -I {} tmux run-shell 'cd #{pane_current_path}; $command_string \"{}\" > /dev/null'"
 }
 
+git_checkout_command_generator() {
+  echo "xargs -I {} tmux run-shell 'cd #{pane_current_path}; git checkout \"{}\" > /dev/null'"
+  echo "tmux send-keys 'Enter'"
+}
+
 generate_open_command() {
 	if is_osx; then
 		echo "$(command_generator "open")"
@@ -44,6 +52,10 @@ generate_open_command() {
 		# error command for Linux machines when 'xdg-open' not installed
 		"$CURRENT_DIR/scripts/tmux_open_error_message.sh xdg-open"
 	fi
+}
+
+generate_git_checkout_command() {
+  echo "$(git_checkout_command_generator)"
 }
 
 # 1. write a command to the terminal, example: 'vim -- some_file.txt'
@@ -76,8 +88,21 @@ set_copy_mode_open_editor_bindings() {
 	done
 }
 
+set_copy_mode_git_checkout_bindings() {
+	local git_checkout_command="$(generate_git_checkout_command)"
+	local key_bindings=$(get_tmux_option "$git_checkout_option" "$default_git_checkout_key")
+	local key
+
+	for key in $key_bindings; do
+		tmux bind-key -t vi-copy    "$key" copy-pipe "$git_checkout_command"
+		tmux bind-key -t emacs-copy "$key" copy-pipe "$git_checkout_command"
+	done
+}
+
 main() {
 	set_copy_mode_open_bindings
 	set_copy_mode_open_editor_bindings
+	set_copy_mode_git_checkout_bindings
 }
+
 main
