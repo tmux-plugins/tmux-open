@@ -49,7 +49,7 @@ generate_open_command() {
 		echo "$(command_generator "xdg-open")"
 	else
 		# error command for Linux machines when 'xdg-open' not installed
-		"$CURRENT_DIR/scripts/tmux_open_error_message.sh xdg-open"
+		"$CURRENT_DIR/scripts/tmux_open_error_message.sh" "xdg-open"
 	fi
 }
 
@@ -61,7 +61,7 @@ generate_open_search_command() {
 		echo "$(search_command_generator "xdg-open" "$engine")"
 	else
 		# error command for Linux machines when 'xdg-open' not installed
-		"$CURRENT_DIR/scripts/tmux_open_error_message.sh xdg-open"
+		"$CURRENT_DIR/scripts/tmux_open_error_message.sh" "xdg-open"
 	fi
 }
 
