@@ -21,6 +21,11 @@ is_osx() {
 	[ "$platform" == "Darwin" ]
 }
 
+is_cygwin() {
+        local platform=$(uname)
+        [[ "$platform" =~ CYGWIN(.*) ]]
+}
+
 get_editor_from_the_env_var() {
 	if [ -z $EDITOR ]; then
 		# $EDITOR not set, fallback
@@ -45,6 +50,8 @@ search_command_generator() {
 generate_open_command() {
 	if is_osx; then
 		echo "$(command_generator "open")"
+	elif is_cygwin; then
+		echo "$(command_generator "cygstart")"
 	elif command_exists "xdg-open"; then
 		echo "$(command_generator "xdg-open")"
 	else
