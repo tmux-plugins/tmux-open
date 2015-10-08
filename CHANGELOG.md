@@ -2,6 +2,7 @@
 
 ### master
 - enable extensibility via search engines (@vasconcelloslf)
+- cygwin support
 
 ### v2.0.0, Nov 01, 2014
 - 'open editor' command can now open files that have spaces
