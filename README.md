@@ -2,6 +2,8 @@
 
 Plugin for opening highlighted selection directly from Tmux copy mode.
 
+Tested and working on Linux, OSX and Cygwin.
+
 ### Key bindings
 
 In tmux copy mode:
