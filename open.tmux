@@ -11,6 +11,9 @@ default_open_editor_key="C-o"
 open_editor_option="@open-editor"
 open_editor_override="@open-editor-command"
 
+default_peek_key="O"
+peek_option="@peek"
+
 command_exists() {
 	local command="$1"
 	type "$command" >/dev/null 2>&1
@@ -83,6 +86,15 @@ generate_editor_command() {
 	echo "xargs -I {} tmux send-keys '$editor -- \"{}\"'; tmux send-keys 'C-m'"
 }
 
+generate_peek_command() {
+  if is_osx; then
+    echo "$(command_generator "qlmanage -p >/dev/null 2>&1")"
+  else
+    # error command for non-OSX (I don't know the Linux peek command)
+		"$CURRENT_DIR/scripts/tmux_open_error_message.sh" "qlmanage"
+  fi
+}
+
 set_copy_mode_open_bindings() {
 	local open_command="$(generate_open_command)"
 	local key_bindings=$(get_tmux_option "$open_option" "$default_open_key")
@@ -100,6 +112,16 @@ set_copy_mode_open_editor_bindings() {
 	for key in $key_bindings; do
 		tmux bind-key -t vi-copy    "$key" copy-pipe "$editor_command"
 		tmux bind-key -t emacs-copy "$key" copy-pipe "$editor_command"
+	done
+}
+
+set_copy_mode_peek_bindings() {
+	local peek_command="$(generate_peek_command)"
+	local key_bindings=$(get_tmux_option "$peek_option" "$default_peek_key")
+	local key
+	for key in $key_bindings; do
+		tmux bind-key -t vi-copy    "$key" copy-pipe "$peek_command"
+		tmux bind-key -t emacs-copy "$key" copy-pipe "$peek_command"
 	done
 }
 
@@ -121,6 +143,7 @@ main() {
 	set_copy_mode_open_bindings
 	set_copy_mode_open_editor_bindings
 	set_copy_mode_open_search_bindings
+	set_copy_mode_peek_bindings
 }
 
 main

@@ -10,6 +10,8 @@ In tmux copy mode:
 
 - `o` - "open" a highlighted selection with the system default program. `open`
     for OS X or `xdg-open` for Linux.
+- `O` - "peek" a highlighted selection with the system default program.
+  `qlmanage` (quicklook) for OS X (unsupported on Linux, at the moment).
 - `Ctrl-o` - open a highlighted selection with the `$EDITOR`
 
 ### Examples
