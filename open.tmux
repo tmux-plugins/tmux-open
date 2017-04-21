@@ -88,8 +88,13 @@ set_copy_mode_open_bindings() {
 	local key_bindings=$(get_tmux_option "$open_option" "$default_open_key")
 	local key
 	for key in $key_bindings; do
-		tmux bind-key -t vi-copy    "$key" copy-pipe "$open_command"
-		tmux bind-key -t emacs-copy "$key" copy-pipe "$open_command"
+		if tmux-is-at-least 2.4; then
+			tmux bind-key -T copy-mode-vi "$key" send-keys -X copy-pipe-and-cancel "$open_command"
+			tmux bind-key -T copy-mode    "$key" send-keys -X copy-pipe-and-cancel "$open_command"
+		else
+			tmux bind-key -t vi-copy    "$key" copy-pipe "$open_command"
+			tmux bind-key -t emacs-copy "$key" copy-pipe "$open_command"
+		fi
 	done
 }
 
@@ -98,8 +103,13 @@ set_copy_mode_open_editor_bindings() {
 	local key_bindings=$(get_tmux_option "$open_editor_option" "$default_open_editor_key")
 	local key
 	for key in $key_bindings; do
-		tmux bind-key -t vi-copy    "$key" copy-pipe "$editor_command"
-		tmux bind-key -t emacs-copy "$key" copy-pipe "$editor_command"
+		if tmux-is-at-least 2.4; then
+			tmux bind-key -T copy-mode-vi "$key" send-keys -X copy-pipe-and-cancel "$editor_command"
+			tmux bind-key -T copy-mode    "$key" send-keys -X copy-pipe-and-cancel "$editor_command"
+		else
+			tmux bind-key -t vi-copy    "$key" copy-pipe "$editor_command"
+			tmux bind-key -t emacs-copy "$key" copy-pipe "$editor_command"
+		fi
 	done
 }
 
