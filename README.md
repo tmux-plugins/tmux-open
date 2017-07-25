@@ -11,6 +11,7 @@ In tmux copy mode:
 - `o` - "open" a highlighted selection with the system default program. `open`
     for OS X or `xdg-open` for Linux.
 - `Ctrl-o` - open a highlighted selection with the `$EDITOR`
+- `Shift-s` - search the highlighted selection directly inside a search engine (defaults to google).
 
 ### Examples
 
@@ -22,6 +23,7 @@ In copy mode:
 - highlight `http://example.com` and press `o` - link will be opened in the
   default browser.
 - highlight `file.txt` and press `Ctrl-o` - file will open in `$EDITOR`.
+- highlight `TypeError: 'undefined' is not a function` and press `Shift-s` - the text snipped will be searched directly inside google by default
 
 ### Screencast
 
@@ -63,6 +65,21 @@ Put `set -g @open 'x'` in `tmux.conf`.
 > How can I change the default "Ctrl-o" key binding to "Ctrl-x"?
 
 Put `set -g @open-editor 'C-x'` in `tmux.conf`.
+
+> How can I change the default search engine to "duckduckgo" or any other one?
+
+Put `set -g @open-S 'https://www.duckduckgo.com/'` in `tmux.conf`
+
+> How can I use multiple search engines?
+
+Put:
+
+```
+set -g @open-B 'https://www.bing.com/search?q='
+set -g @open-S 'https://www.google.com/search?q='
+```
+
+in `tmux.conf`
 
 ### Other goodies
 

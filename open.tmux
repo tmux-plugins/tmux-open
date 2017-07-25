@@ -122,8 +122,14 @@ set_copy_mode_open_search_bindings() {
 	for engine_var in $stored_engine_vars; do
 		engine="$(get_engine "$engine_var")"
 
-		tmux bind-key -t vi-copy    "$engine_var" copy-pipe "$(generate_open_search_command "$engine")"
-		tmux bind-key -t emacs-copy "$engine_var" copy-pipe "$(generate_open_search_command "$engine")"
+    if tmux-is-at-least 2.4; then
+      tmux bind-key -T copy-mode-vi "$engine_var" send-keys -X copy-pipe-and-cancel "$(generate_open_search_command "$engine")"
+      tmux bind-key -T copy-mode    "$engine_var" send-keys -X copy-pipe-and-cancel "$(generate_open_search_command "$engine")"
+		else
+      tmux bind-key -t vi-copy    "$engine_var" copy-pipe "$(generate_open_search_command "$engine")"
+      tmux bind-key -t emacs-copy "$engine_var" copy-pipe "$(generate_open_search_command "$engine")"
+		fi
+
 	done
 }
 
