@@ -35,12 +35,18 @@ display_message() {
 }
 
 stored_engine_vars() {
-	tmux show-options -g | grep -i "^@open" | cut -d '-' -f2 | cut -d ' ' -f1 | xargs
+	local engine_vars=$(tmux show-options -g | grep -i "^@open" | cut -d '-' -f2 | cut -d ' ' -f1 | xargs)
+	if [ -z $engine_vars ]; then
+		echo "S"
+	fi
 }
 
 get_engine() {
 	local engine_var="$1"
 	tmux show-options -g | grep -i "^@open-$engine_var" | cut -d ' ' -f2 | xargs
+	if [ -z $engine_var ]; then
+		echo "https://www.google.com/search?q="
+	fi
 }
 
 tmux_version="$(tmux -V | cut -d ' ' -f 2)"
