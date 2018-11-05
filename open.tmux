@@ -36,14 +36,14 @@ get_editor_from_the_env_var() {
 
 command_generator() {
 	local command_string="$1"
-	echo "xargs -I {} tmux run-shell 'cd #{pane_current_path}; $command_string \"{}\" > /dev/null'"
+	echo "xargs -I {} tmux run-shell -b 'cd #{pane_current_path}; $command_string \"{}\"'"
 }
 
 search_command_generator() {
 	local command_string="$1"
 	local engine="$2"
 
-	echo "xargs -I {} tmux run-shell 'cd #{pane_current_path}; $command_string $engine\"{}\" > /dev/null'"
+	echo "xargs -I {} tmux run-shell -b 'cd #{pane_current_path}; $command_string $engine\"{}\"'"
 }
 
 generate_open_command() {
