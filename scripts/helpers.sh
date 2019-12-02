@@ -66,6 +66,8 @@ tmux-is-at-least() {
 	for ((i=0; i<${#tver[@]}; i++)); do
 		if ((10#${tver[i]} < 10#${wver[i]})); then
 			return 1
+		elif ((10#${tver[i]} > 10#${wver[i]})); then
+			return 0
 		fi
 	done
 	return 0
