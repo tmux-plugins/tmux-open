@@ -11,6 +11,10 @@ default_open_editor_key="C-o"
 open_editor_option="@open-editor"
 open_editor_override="@open-editor-command"
 
+default_open_editor_in_pane_key="M-o"
+open_editor_in_pane_option="@open-editor-in-pane"
+open_editor_in_pane_override="@open-editor-in-pane-command"
+
 command_exists() {
 	local command="$1"
 	type "$command" >/dev/null 2>&1
@@ -83,6 +87,14 @@ generate_editor_command() {
 	echo "xargs -I {} tmux send-keys '$editor -- \"{}\"'; tmux send-keys 'C-m'"
 }
 
+generate_editor_in_new_pane_command() {
+	local environment_editor=$(get_editor_from_the_env_var)
+	local editor=$(get_tmux_option "$open_editor_override" "$environment_editor")
+	# vim freezes terminal unless there's the '--' argument. Other editors seem
+	# to be fine with it (textmate [mate], light table [table]).
+	echo "xargs -I {} tmux split-window -h '$editor -- \"{}\"'"
+}
+
 set_copy_mode_open_bindings() {
 	local open_command="$(generate_open_command)"
 	local key_bindings=$(get_tmux_option "$open_option" "$default_open_key")
@@ -113,6 +125,16 @@ set_copy_mode_open_editor_bindings() {
 	done
 }
 
+set_copy_mode_open_editor_in_new_pane_bindings() {
+	local editor_command="$(generate_editor_in_new_pane_command)"
+	local key_bindings=$(get_tmux_option "$open_editor_in_pane_option" "$default_open_editor_in_pane_key")
+	local key
+	for key in $key_bindings; do
+		tmux bind-key -t vi-copy    "$key" copy-pipe "$editor_command"
+		tmux bind-key -t emacs-copy "$key" copy-pipe "$editor_command"
+	done
+}
+
 set_copy_mode_open_search_bindings() {
 	local stored_engine_vars="$(stored_engine_vars)"
 	local engine_var
@@ -136,6 +158,7 @@ set_copy_mode_open_search_bindings() {
 main() {
 	set_copy_mode_open_bindings
 	set_copy_mode_open_editor_bindings
+	set_copy_mode_open_editor_in_new_pane_bindings
 	set_copy_mode_open_search_bindings
 }
 
