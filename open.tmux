@@ -51,6 +51,8 @@ generate_open_command() {
 		echo "$(command_generator "open")"
 	elif is_cygwin; then
 		echo "$(command_generator "cygstart")"
+	elif command_exists "wsl-open"; then
+		echo "$(command_generator "wsl-open")"
 	elif command_exists "xdg-open"; then
 		echo "$(command_generator "xdg-open")"
 	else
