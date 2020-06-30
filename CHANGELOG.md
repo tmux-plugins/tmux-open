@@ -1,6 +1,7 @@
 # Changelog
 
 ### master
+- fix a problem where we try to bind `editor` from `@open-editor`
 
 ### v3.0.0, Nov 01, 2017
 - enable extensibility via search engines (@vasconcelloslf)

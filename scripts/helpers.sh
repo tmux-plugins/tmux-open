@@ -35,7 +35,12 @@ display_message() {
 }
 
 stored_engine_vars() {
-	tmux show-options -g | grep -i "^@open" | cut -d '-' -f2 | cut -d ' ' -f1 | xargs
+	tmux show-options -g |
+		grep -i "^@open-" |
+		grep -vi "^@open-editor" |
+		cut -d '-' -f2 |
+		cut -d ' ' -f1 |
+		xargs
 }
 
 get_engine() {
