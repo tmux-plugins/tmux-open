@@ -1,12 +1,9 @@
 get_tmux_option() {
 	local option="$1"
 	local default_value="$2"
-	local option_value=$(tmux show-option -gqv "$option")
-	if [ -z "$option_value" ]; then
-		echo "$default_value"
-	else
-		echo "$option_value"
-	fi
+	local option_value
+	option_value="$(tmux show-option -gqv "$option")"
+	echo "${option_value:-$default_value}"
 }
 
 # Ensures a message is displayed for 5 seconds in tmux prompt.
@@ -22,7 +19,8 @@ display_message() {
 	fi
 
 	# saves user-set 'display-time' option
-	local saved_display_time=$(get_tmux_option "display-time" "750")
+	local saved_display_time
+	saved_display_time="$(get_tmux_option "display-time" "750")"
 
 	# sets message display time to 5 seconds
 	tmux set-option -gq display-time "$display_duration"
@@ -37,7 +35,7 @@ display_message() {
 stored_engine_vars() {
 	tmux show-options -g |
 		grep -i "^@open-" |
-		grep -vi "^@open-editor" |
+		grep -Evi "^@open-(editor|opener)" |
 		cut -d '-' -f2 |
 		cut -d ' ' -f1 |
 		xargs
@@ -48,15 +46,15 @@ get_engine() {
 	tmux show-options -g | grep -i "^@open-$engine_var" | cut -d ' ' -f2 | xargs
 }
 
-tmux_version="$(tmux -V | cut -d ' ' -f 2 | sed 's/next-//'))"
+# The last grep is required to remove non-digits from version such as "3.0a".
+tmux_version="$(tmux -V | cut -d ' ' -f 2 | grep -Eo '[0-9\.]+')"
 tmux-is-at-least() {
-	if [[ $tmux_version == $1 ]]
-	then
+	if [[ $tmux_version == "$1" ]]; then
 		return 0
 	fi
 
-	local IFS=.
-	local i tver=($tmux_version) wver=($1)
+	IFS='.' read -r -a tver <<< "$tmux_version"
+	IFS='.' read -r -a wver <<< "$1"
 
 	# fill empty fields in tver with zeros
 	for ((i=${#tver[@]}; i<${#wver[@]}; i++)); do

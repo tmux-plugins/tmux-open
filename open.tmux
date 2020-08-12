@@ -2,6 +2,7 @@
 
 CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
+# shellcheck source=./scripts/helpers.sh
 source "$CURRENT_DIR/scripts/helpers.sh"
 
 default_open_key="o"
@@ -11,27 +12,19 @@ default_open_editor_key="C-o"
 open_editor_option="@open-editor"
 open_editor_override="@open-editor-command"
 
+open_opener_override="@open-opener-command"
+
 command_exists() {
 	local command="$1"
 	type "$command" >/dev/null 2>&1
 }
 
 is_osx() {
-	local platform=$(uname)
-	[ "$platform" == "Darwin" ]
+	[ "$(uname)" == "Darwin" ]
 }
 
 is_cygwin() {
 	[[ "$(uname)" =~ CYGWIN ]]
-}
-
-get_editor_from_the_env_var() {
-	if [ -z $EDITOR ]; then
-		# $EDITOR not set, fallback
-		echo "vi"
-	else
-		echo "$EDITOR"
-	fi
 }
 
 command_generator() {
@@ -47,12 +40,15 @@ search_command_generator() {
 }
 
 generate_open_command() {
-	if is_osx; then
-		echo "$(command_generator "open")"
+  local opener
+  if opener="$(get_tmux_option "$open_opener_override" '')" && [ -n "${opener-}" ]; then
+    command_generator "${opener}"
+	elif is_osx; then
+		command_generator "open"
 	elif is_cygwin; then
-		echo "$(command_generator "cygstart")"
+		command_generator "cygstart"
 	elif command_exists "xdg-open"; then
-		echo "$(command_generator "xdg-open")"
+		command_generator "xdg-open"
 	else
 		# error command for Linux machines when 'xdg-open' not installed
 		"$CURRENT_DIR/scripts/tmux_open_error_message.sh" "xdg-open"
@@ -61,12 +57,15 @@ generate_open_command() {
 
 generate_open_search_command() {
 	local engine="$1"
-	if is_osx; then
-		echo "$(search_command_generator "open" "$engine")"
+	local opener
+	if opener="$(get_tmux_option "$open_opener_override" '')" && [ -n "${opener-}" ]; then
+		search_command_generator "$opener" "$engine"
+	elif is_osx; then
+		search_command_generator "open" "$engine"
 	elif is_cygwin; then
-		echo "$(command_generator "cygstart")"
+		command_generator "cygstart"
 	elif command_exists "xdg-open"; then
-		echo "$(search_command_generator "xdg-open" "$engine")"
+		search_command_generator "xdg-open" "$engine"
 	else
 		# error command for Linux machines when 'xdg-open' not installed
 		"$CURRENT_DIR/scripts/tmux_open_error_message.sh" "xdg-open"
@@ -76,16 +75,19 @@ generate_open_search_command() {
 # 1. write a command to the terminal, example: 'vim -- some_file.txt'
 # 2. invoke the command by pressing enter/C-m
 generate_editor_command() {
-	local environment_editor=$(get_editor_from_the_env_var)
-	local editor=$(get_tmux_option "$open_editor_override" "$environment_editor")
+	local environment_editor="${EDITOR:-vi}"
+	local editor
+	editor=$(get_tmux_option "$open_editor_override" "$environment_editor")
 	# vim freezes terminal unless there's the '--' argument. Other editors seem
 	# to be fine with it (textmate [mate], light table [table]).
 	echo "xargs -I {} tmux send-keys '$editor -- \"{}\"'; tmux send-keys 'C-m'"
 }
 
 set_copy_mode_open_bindings() {
-	local open_command="$(generate_open_command)"
-	local key_bindings=$(get_tmux_option "$open_option" "$default_open_key")
+	local open_command
+	open_command="$(generate_open_command)"
+	local key_bindings
+	key_bindings=$(get_tmux_option "$open_option" "$default_open_key")
 	local key
 	for key in $key_bindings; do
 		if tmux-is-at-least 2.4; then
@@ -99,8 +101,10 @@ set_copy_mode_open_bindings() {
 }
 
 set_copy_mode_open_editor_bindings() {
-	local editor_command="$(generate_editor_command)"
-	local key_bindings=$(get_tmux_option "$open_editor_option" "$default_open_editor_key")
+	local editor_command
+	editor_command="$(generate_editor_command)"
+	local key_bindings
+	key_bindings="$(get_tmux_option "$open_editor_option" "$default_open_editor_key")"
 	local key
 	for key in $key_bindings; do
 		if tmux-is-at-least 2.4; then
@@ -114,13 +118,14 @@ set_copy_mode_open_editor_bindings() {
 }
 
 set_copy_mode_open_search_bindings() {
-	local stored_engine_vars="$(stored_engine_vars)"
+	local stored_engine_vars
+	stored_engine_vars="$(stored_engine_vars)"
 	local engine_var
 	local engine
 	local key
 
 	for engine_var in $stored_engine_vars; do
-		engine="$(get_engine "$engine_var")"
+		engine="$(get_engine "$engine_var")" || continue
 
 		if tmux-is-at-least 2.4; then
 			tmux bind-key -T copy-mode-vi "$engine_var" send-keys -X copy-pipe-and-cancel "$(generate_open_search_command "$engine")"
