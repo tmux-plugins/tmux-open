@@ -68,7 +68,7 @@ Put `set -g @open-editor 'C-x'` in `tmux.conf`.
 
 > How can I change the default search engine to "duckduckgo" or any other one?
 
-Put `set -g @open-S 'https://www.duckduckgo.com/'` in `tmux.conf`
+Put `set -g @open-S 'https://www.duckduckgo.com/?q='` in `tmux.conf`
 
 > How can I use multiple search engines?
 
