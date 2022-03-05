@@ -43,7 +43,7 @@ search_command_generator() {
 	local command_string="$1"
 	local engine="$2"
 
-	echo "sed 's/\ /+/g | xargs -I {} tmux run-shell -b 'cd #{pane_current_path}; $command_string $engine\"{}\" > /dev/null'"
+	echo "sed 's/\ /+/g' | xargs -I {} tmux run-shell -b 'cd #{pane_current_path}; $command_string $engine\"{}\" > /dev/null'"
 }
 
 generate_open_command() {
