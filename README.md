@@ -66,6 +66,14 @@ Put `set -g @open 'x'` in `tmux.conf`.
 
 Put `set -g @open-editor 'C-x'` in `tmux.conf`.
 
+> How can I change the default editor without setting `$EDITOR`?
+
+Put `set -g @open-editor-command 'my-editor'` in `tmux.conf`.
+
+> How can I change the default command for opening the selection?
+
+Put `set -g @open-opener-command 'my-opener'` in `tmux.conf`.
+
 > How can I change the default search engine to "duckduckgo" or any other one?
 
 Put `set -g @open-S 'https://www.duckduckgo.com/?q='` in `tmux.conf`
