@@ -34,16 +34,20 @@ get_editor_from_the_env_var() {
 	fi
 }
 
+preserve_url_hash() {
+	echo "sed s/##/####/g"
+}
+
 command_generator() {
 	local command_string="$1"
-	echo "xargs -I {} tmux run-shell -b 'cd #{pane_current_path}; $command_string \"{}\" > /dev/null'"
+	echo "$(preserve_url_hash) | xargs -I {} tmux run-shell -b 'cd #{pane_current_path}; $command_string \"{}\" > /dev/null'"
 }
 
 search_command_generator() {
 	local command_string="$1"
 	local engine="$2"
 
-	echo "sed 's/\ /+/g' | xargs -I {} tmux run-shell -b 'cd #{pane_current_path}; $command_string $engine\"{}\" > /dev/null'"
+	echo "$(preserve_url_hash) | sed 's/\ /+/g' | xargs -I {} tmux run-shell -b 'cd #{pane_current_path}; $command_string $engine\"{}\" > /dev/null'"
 }
 
 generate_open_command() {
@@ -80,7 +84,7 @@ generate_editor_command() {
 	local editor=$(get_tmux_option "$open_editor_override" "$environment_editor")
 	# vim freezes terminal unless there's the '--' argument. Other editors seem
 	# to be fine with it (textmate [mate], light table [table]).
-	echo "xargs -I {} tmux send-keys '$editor -- \"{}\"'; tmux send-keys 'C-m'"
+	echo "$(preserve_url_hash) | xargs -I {} tmux send-keys '$editor -- \"{}\"'; tmux send-keys 'C-m'"
 }
 
 set_copy_mode_open_bindings() {
