@@ -2,7 +2,7 @@
 
 Plugin for opening highlighted selection directly from Tmux copy mode.
 
-Tested and working on Linux, OSX and Cygwin.
+Tested and working on Linux, OSX, Cygwin and WSL with [wsl-open](https://github.com/4U6U57/wsl-open).
 
 ### Key bindings
 
