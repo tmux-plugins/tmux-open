@@ -10,6 +10,7 @@ open_option="@open"
 default_open_editor_key="C-o"
 open_editor_option="@open-editor"
 open_editor_override="@open-editor-command"
+cancel_copy_mode=$(get_tmux_option "@open-cancel-copy-mode" "on")
 
 command_exists() {
 	local command="$1"
@@ -93,8 +94,13 @@ set_copy_mode_open_bindings() {
 	local key
 	for key in $key_bindings; do
 		if tmux-is-at-least 2.4; then
-			tmux bind-key -T copy-mode-vi "$key" send-keys -X copy-pipe-and-cancel "$open_command"
-			tmux bind-key -T copy-mode    "$key" send-keys -X copy-pipe-and-cancel "$open_command"
+			if [[ "$cancel_copy_mode" == "on" ]]; then
+				tmux bind-key -T copy-mode-vi "$key" send-keys -X copy-pipe-and-cancel "$open_command"
+				tmux bind-key -T copy-mode    "$key" send-keys -X copy-pipe-and-cancel "$open_command"
+			else
+				tmux bind-key -T copy-mode-vi "$key" send-keys -X copy-pipe "$open_command"
+				tmux bind-key -T copy-mode    "$key" send-keys -X copy-pipe "$open_command"
+			fi
 		else
 			tmux bind-key -t vi-copy    "$key" copy-pipe "$open_command"
 			tmux bind-key -t emacs-copy "$key" copy-pipe "$open_command"
@@ -108,8 +114,13 @@ set_copy_mode_open_editor_bindings() {
 	local key
 	for key in $key_bindings; do
 		if tmux-is-at-least 2.4; then
-			tmux bind-key -T copy-mode-vi "$key" send-keys -X copy-pipe-and-cancel "$editor_command"
-			tmux bind-key -T copy-mode    "$key" send-keys -X copy-pipe-and-cancel "$editor_command"
+			if [[ "$cancel_copy_mode" == "on" ]]; then
+				tmux bind-key -T copy-mode-vi "$key" send-keys -X copy-pipe-and-cancel "$editor_command"
+				tmux bind-key -T copy-mode    "$key" send-keys -X copy-pipe-and-cancel "$editor_command"
+			else
+				tmux bind-key -T copy-mode-vi "$key" send-keys -X copy-pipe "$editor_command"
+				tmux bind-key -T copy-mode    "$key" send-keys -X copy-pipe "$editor_command"
+			fi
 		else
 			tmux bind-key -t vi-copy    "$key" copy-pipe "$editor_command"
 			tmux bind-key -t emacs-copy "$key" copy-pipe "$editor_command"
@@ -127,8 +138,13 @@ set_copy_mode_open_search_bindings() {
 		engine="$(get_engine "$engine_var")"
 
 		if tmux-is-at-least 2.4; then
-			tmux bind-key -T copy-mode-vi "$engine_var" send-keys -X copy-pipe-and-cancel "$(generate_open_search_command "$engine")"
-			tmux bind-key -T copy-mode    "$engine_var" send-keys -X copy-pipe-and-cancel "$(generate_open_search_command "$engine")"
+			if [[ "$cancel_copy_mode" == "on" ]]; then
+				tmux bind-key -T copy-mode-vi "$engine_var" send-keys -X copy-pipe-and-cancel "$(generate_open_search_command "$engine")"
+				tmux bind-key -T copy-mode    "$engine_var" send-keys -X copy-pipe-and-cancel "$(generate_open_search_command "$engine")"
+			else
+				tmux bind-key -T copy-mode-vi "$engine_var" send-keys -X copy-pipe "$(generate_open_search_command "$engine")"
+				tmux bind-key -T copy-mode    "$engine_var" send-keys -X copy-pipe "$(generate_open_search_command "$engine")"
+			fi
 		else
 			tmux bind-key -t vi-copy    "$engine_var" copy-pipe "$(generate_open_search_command "$engine")"
 			tmux bind-key -t emacs-copy "$engine_var" copy-pipe "$(generate_open_search_command "$engine")"
