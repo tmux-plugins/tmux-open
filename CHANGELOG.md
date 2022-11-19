@@ -2,6 +2,7 @@
 
 ### master
 - fix a problem where we try to bind `editor` from `@open-editor`
+- add a "@open-cancel-copy-mode" option that indicates exiting copy mode. if set to "off", will to preserve copy mode. ( default is "on" )
 
 ### v3.0.0, Nov 01, 2017
 - enable extensibility via search engines (@vasconcelloslf)
