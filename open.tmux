@@ -25,6 +25,10 @@ is_cygwin() {
 	[[ "$(uname)" =~ CYGWIN ]]
 }
 
+is_termux() {
+    declare -p | grep -E 'TERMUX_[A-Z_]+=".+"$'
+}
+
 get_editor_from_the_env_var() {
 	if [ -z $EDITOR ]; then
 		# $EDITOR not set, fallback
@@ -55,6 +59,8 @@ generate_open_command() {
 		echo "$(command_generator "open")"
 	elif is_cygwin; then
 		echo "$(command_generator "cygstart")"
+    elif is_termux; then
+        echo "$(command_generator "termux-open")"
 	elif command_exists "xdg-open"; then
 		echo "$(command_generator "xdg-open")"
 	else
@@ -69,6 +75,8 @@ generate_open_search_command() {
 		echo "$(search_command_generator "open" "$engine")"
 	elif is_cygwin; then
 		echo "$(command_generator "cygstart")"
+    elif is_termux; then
+        echo "$(command_generator "termux-open")"
 	elif command_exists "xdg-open"; then
 		echo "$(search_command_generator "xdg-open" "$engine")"
 	else
