@@ -81,6 +81,10 @@ set -g @open-S 'https://www.google.com/search?q='
 
 in `tmux.conf`
 
+> How can I change the behavior of copying the selection and quitting the copy-mode when opening a file?
+
+Put: `set -g @open-pipe pipe-and-cancel` or `set -g @open-pipe pipe-no-clear` in `tmux.conf`.
+
 ### Other goodies
 
 `tmux-open` works great with:
